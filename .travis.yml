@@ -1,0 +1,28 @@
+sudo: required
+
+services:
+  - docker
+
+before_install:
+  - docker build -t pedrocortez/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true pedrocortez/react-test npm test
+
+  #Build images to production environment
+after_success:  
+  - docker build -t pedrocortez/multi-client ./client
+  - docker build -t pedrocortez/multi-nginx ./nginx
+  - docker build -t pedrocortez/multi-server ./server
+  - docker build -t pedrocortez/multi-worker ./worker
+
+  #login to ubub
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+  #push images to dockerHub
+  - docker push pedrocortez/multi-client
+  - docker push pedrocortez/multi-nginx
+  - docker push pedrocortez/multi-server
+  - docker push pedrocortez/multi-worker
+  
+
