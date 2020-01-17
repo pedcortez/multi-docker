@@ -15,14 +15,25 @@ after_success:
   - docker build -t pedrocortez/multi-nginx ./nginx
   - docker build -t pedrocortez/multi-server ./server
   - docker build -t pedrocortez/multi-worker ./worker
-
   #login to ubub
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
-
   #push images to dockerHub
   - docker push pedrocortez/multi-client
   - docker push pedrocortez/multi-nginx
   - docker push pedrocortez/multi-server
   - docker push pedrocortez/multi-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: eu-west-2
+  app: fib-calculator
+  env: FibCalculator-env
+  bucket_name: elasticbeanstalk-eu-west-2-676081676413
+  bucket_path: docker-multi
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
+  
   
 
