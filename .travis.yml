@@ -24,6 +24,7 @@ after_success:
   - docker push pedrocortez/multi-worker
 
 deploy:
+  edge: true
   provider: elasticbeanstalk
   region: eu-west-2
   app: fib-calculator
@@ -34,6 +35,6 @@ deploy:
     branch: master
   access_key_id: $AWS_ACCESS_KEY
   secret_access_key: $AWS_SECRET_KEY
-  
+
   
 
